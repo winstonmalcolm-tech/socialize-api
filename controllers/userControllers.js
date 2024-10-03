@@ -1,7 +1,14 @@
-const { get } = require("../routes/roomRoutes")
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const crypto = require("crypto");
+
+
 
 const register = (req,res) => {
+    const { username, password } = req.body;
 
+    
+    
 }
 
 const login = (req,res) => {
