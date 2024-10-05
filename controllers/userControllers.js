@@ -43,8 +43,26 @@ const register = async (req,res, next) => {
 
 }
 
-const login = (req,res) => {
+const login = async (req,res, next) => {
+    const { password, username } = req.body;
 
+    const user = await User.findOne({username});
+
+    console.log(user.password);
+
+    if (!user) {
+        res.status(404);
+        next("Not found");
+        return;
+    }
+
+    if ((await bcrypt.compare(password, user.password))) {
+        res.status(200).json({id: user._id});
+        return;
+    }
+
+    res.status(404);
+    next("Incorrect credentials");
 }
 
 const getUsers = (req,res) => {
