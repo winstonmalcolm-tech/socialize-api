@@ -87,14 +87,14 @@ const getUser = async (req,res) => {
 
 const searchUser = async (req,res) => {
     const searchVal = req.query.q;
-    
+
     const foundedUsers = await User.find({_id: {$ne: req.id} ,username: {$regex: ".*"+ searchVal +".*", $options: "i"}}).limit(5);
     
     res.status(200).json({users: foundedUsers});
 }
 
 const logout = (req,res) => {
-
+    //TODO
 }
 
 module.exports = {

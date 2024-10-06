@@ -1,3 +1,5 @@
+const Room = require("../models/roomModel");
+
 const createRoom = (req,res) => {
 
 }

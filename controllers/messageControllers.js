@@ -1,3 +1,5 @@
+const Room = require("../models/messageModel");
+
 const sendMessage = (req,res) => {
 
 }
