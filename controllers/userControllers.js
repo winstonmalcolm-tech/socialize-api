@@ -1,9 +1,15 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
-const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
 const User = require("../models/userModel");
+
+const generateToken = (id) => {
+    token = jwt.sign({id},process.env.JWT_SECRET_KEY);
+
+    return token;
+}
 
 const register = async (req,res, next) => {
     const { username, password } = req.body;
@@ -39,7 +45,7 @@ const register = async (req,res, next) => {
         return;
     }
 
-    res.status(201).json({msg: "Congratulation, Welcome"});
+    res.status(201).json({authId: generateToken(user._id), msg: "Congratulation, Welcome"});
 
 }
 
@@ -48,8 +54,6 @@ const login = async (req,res, next) => {
 
     const user = await User.findOne({username});
 
-    console.log(user.password);
-
     if (!user) {
         res.status(404);
         next("Not found");
@@ -57,7 +61,7 @@ const login = async (req,res, next) => {
     }
 
     if ((await bcrypt.compare(password, user.password))) {
-        res.status(200).json({id: user._id});
+        res.status(200).json({authId: generateToken(user._id)});
         return;
     }
 
@@ -65,16 +69,28 @@ const login = async (req,res, next) => {
     next("Incorrect credentials");
 }
 
-const getUsers = (req,res) => {
+const getUsers = async (req,res) => {
+
+    const users = await User.find({_id: {$ne: req.id}}, {fields: {password: 0} });
+
+    res.status(200).json({users: users});
 
 }
 
-const getUser = (req,res) => {
+const getUser = async (req,res) => {
+
+    const user = await User.findById(req.id).select("-password -_id");
+
+    res.status(200).json(user);
 
 }
 
-const searchUser = (req,res) => {
-
+const searchUser = async (req,res) => {
+    const searchVal = req.query.q;
+    
+    const foundedUsers = await User.find({_id: {$ne: req.id} ,username: {$regex: ".*"+ searchVal +".*", $options: "i"}}).limit(5);
+    
+    res.status(200).json({users: foundedUsers});
 }
 
 const logout = (req,res) => {
