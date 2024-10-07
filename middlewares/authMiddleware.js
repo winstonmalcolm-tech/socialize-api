@@ -3,6 +3,10 @@ const jwt = require("jsonwebtoken");
 const authorize = async (req,res, next) => {
 
     try {
+
+        if (!req.headers.authorization) {
+            throw new Error("JWT Token missing");
+        }
         const token = req.headers.authorization;
 
         if (!token.startsWith("Bearer")) {

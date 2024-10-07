@@ -10,16 +10,6 @@ const RoomModel = new mongoose.Schema({
         required: [false]
     },
 
-    isPublic: {
-        type: Boolean,
-        required: [true, "Please enter a bool value"]
-    },
-
-    joinUrl: {
-        type: String,
-        required: [false]
-    },
-
     ownerId: {
         type: mongoose.SchemaTypes.ObjectId,
         required: [true, "Please enter owner id"]
