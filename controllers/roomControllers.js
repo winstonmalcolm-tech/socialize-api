@@ -47,6 +47,27 @@ const joinRoom = async (req,res, next) => {
 
 const leaveRoom = async (req, res, next) => {
 
+    try {
+        const roomID = req.params.roomid;
+
+        if (roomID == null) {
+            res.status(400);
+            throw new Error("room ID missing");
+        }
+
+
+        const room = await Room.findById(roomID);
+
+        room.members = room.members.filter(id => id !== req.id);
+
+        await Room.findByIdAndUpdate(roomID, {members: room.members});
+
+        res.status(200).json({message: "Remove successfully"});
+
+
+    } catch(error) {
+        next(error.message);
+    }
 }
 
 const getRooms = async (req,res, next) => {
@@ -61,12 +82,59 @@ const getRooms = async (req,res, next) => {
 
 }
 
-const getRoom = (req,res, next) => {
+const getRoom = async (req,res, next) => {
+    try {
+        const roomID = req.params.roomid;
+
+        if (!roomID) {
+            res.status(400);
+            throw new Error("room ID missing");
+        }
+
+        const room = await Room.findById(roomID);
+
+        if (!room) {
+            res.status(404);
+            throw new Error("Room not found");
+        }
+
+        res.status(200).json({room: room});
+
+    } catch(error) {
+        next(error.message);
+    }
+    
 
 }
 
-const deleteRoom = (req,res, next) => {
+const deleteRoom = async (req,res, next) => {
+    
+    try {
+        const roomID = req.params.roomid;
 
+        if (!roomID) {
+            res.status(400);
+            throw new Error("room ID missing");
+        }
+
+        const room = await Room.findById(roomID);
+
+        if (!room) {
+            res.status(404);
+            throw new Error("Room not found");
+        }
+
+        if (req.id !== room._id) {
+            res.status(401);
+            throw new Error("Not authorized to delete");
+        }
+
+        await Room.findByIdAndDelete(roomID);
+        res.status(200).json({message: "Deleted"});
+
+    } catch (error) {
+        next(error.message);
+    }
 }
 
 module.exports = {
