@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post("/create", authorize, createRoom);
 
-router.put("/join/:id", authorize, joinRoom);
+router.put("/join/:roomid", authorize, joinRoom);
 
 router.put("/leaveroom/:id", authorize, leaveRoom);
 
