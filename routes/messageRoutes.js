@@ -1,5 +1,5 @@
 const express = require("express");
-const {sendMessage, getChatMessages, getRoomMessages, deleteMessages} = require("../controllers/messageControllers");
+const {sendMessage, getChatMessages, getRoomMessages, deleteRoomMessages} = require("../controllers/messageControllers");
 const authorize = require("../middlewares/authMiddleware");
 const router = express.Router();
 
@@ -10,6 +10,6 @@ router.get("/getchatmessages", authorize, getChatMessages);
 
 router.get("/getroommessages/:id", authorize, getRoomMessages);
 
-router.delete("/deletemessages/:roomid", authorize, deleteMessages);
+router.delete("/deleteroommessages/:roomid", authorize, deleteRoomMessages);
 
 module.exports = router;
