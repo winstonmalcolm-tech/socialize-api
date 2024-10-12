@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const dbConnect = require("./config/dbConfig");
 const errorHandler = require("./middlewares/errorMiddleware");
 
@@ -10,6 +11,8 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 app.use(express.json());
+app.use(express.urlencoded());
+app.use(cors());
 
 dbConnect();
 

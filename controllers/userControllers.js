@@ -52,6 +52,12 @@ const register = async (req,res, next) => {
 const login = async (req,res, next) => {
     const { password, username } = req.body;
 
+    if (!username || !password) {
+        res.status(400);
+        next("Please fill all fields");
+        return;
+    }
+
     const user = await User.findOne({username});
 
     if (!user) {
@@ -61,7 +67,7 @@ const login = async (req,res, next) => {
     }
 
     if ((await bcrypt.compare(password, user.password))) {
-        res.status(200).json({authId: generateToken(user._id)});
+        res.status(200).json({authId: generateToken(user._id), msg: `Welcome back ${user.username}`});
         return;
     }
 
